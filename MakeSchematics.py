@@ -120,11 +120,11 @@ def make_eagle_device_schematics (gcom_dir, catalog, sch_template, libraries):
             
             instances = sch_template.find("./drawing/schematic/sheets/sheet/instances")
             
-            parts.append( ET.Element("part", name=ref, library=library_name, deviceset=device_name, device=variant, value=value) )
-            
-            
-            
-            instances.append( ET.Element("instance", part=ref, gate="G$1", x="0",y="0") )
+            if (library_name == "None") or (library_name == "NONE") or (device_name == "None") or (device_name == "NONE"):
+                print "Dummy part found:", ref, device_name, library_name, variant, value
+            else:
+                parts.append( ET.Element("part", name=ref, library=library_name, deviceset=device_name, device=variant, value=value) )
+                instances.append( ET.Element("instance", part=ref, gate="G$1", x="0",y="0") )
             
             # add libraries
             for l in libraries:
