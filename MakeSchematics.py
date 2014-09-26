@@ -132,10 +132,68 @@ def make_eagle_device_schematics (gcom_dir, catalog, sch_template, libraries):
                 library.find("./drawing/library").set("name", l.split("/")[-1].replace(".lbr", ""))
                 sch_template.find("./drawing/schematic/libraries").append(copy.deepcopy(library.find("./drawing/library")))
 
+            make_pin_nets(sch_template)
+
             sch_template.write(schematic_path)
             print
             
     return catalog
+            
+def make_pin_nets (schematic):
+    print "Adding pin nets..."
+    
+    parts = schematic.find("./drawing/schematic/parts")
+    
+    if parts is None:
+        return
+    
+    parts = parts.findall("part")
+    
+    part_map = {}
+    for part in parts:
+        part_map[part.get("name")] = part
+    
+    sheets = schematic.find("./drawing/schematic/sheets")
+    sheets = sheets.findall("sheet")
+    
+    for sheet in sheets:
+        print "In sheet..."
+        instances = sheet.find("instances")
+        instances = instances.findall("instance")
+        
+        for instance in instances:
+            print "In instance..."
+            gate = instance.get("gate")
+            ref = instance.get("part")
+        
+            library = part_map[ref].get("library")
+            print "Library:", library
+            deviceset = part_map[ref].get("deviceset")
+        
+            library = schematic.find("./drawing/schematic/libraries/library/[@name='"+library+"']")
+            
+            deviceset = library.find("devicesets/deviceset/[@name='"+deviceset+"']")
+            gate = deviceset.find("gates/gate[@name='"+gate+"']")
+        
+            symbol = gate.get("symbol")
+            symbol = library.find("symbols/symbol[@name='"+symbol+"']")
+        
+            pins = symbol.findall("pin")
+        
+            nets = sheet.find("nets")
+        
+            for pin in pins:
+                print "pin:", ref
+                name = pin.get("name")
+                net = ET.Element("net", {"name":name, "class":"0"})
+                segment = ET.Element("segment")
+                pinref = ET.Element("pinref", part=ref, gate=gate.get("name"), pin=name)
+                
+                segment.append(pinref)
+                net.append(segment)
+                nets.append(net)
+        
+        
             
             
             
