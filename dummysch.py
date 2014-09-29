@@ -21,6 +21,6 @@ args.t = args.t[0]
 
 new_cat = MakeSchematics.make_eagle_device_schematics(gcom_dir=args.d, catalog=ET.parse(args.c), sch_template=ET.parse(args.t), libraries=args.l)
 
-CatalogTester.check(new_cat, args.d, args.l)
+#CatalogTester.check(new_cat, args.d, args.l)
 
 new_cat.write(args.c)
