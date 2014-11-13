@@ -104,9 +104,12 @@ def make_eagle_device_schematics (gcom_dir, catalog, sch_template, libraries):
                 device_name = eagledevice.get("name")
             if device_name is None:
                 print "Could not create schematic for component:", component.get("keyname") + ". No device name in eagledevice entry."
+                
             library_name = eagledevice.get("library")
+            
             variant = eagledevice.get("variant")
             if variant is None: variant = ""
+            
             progname = component.get("progname")
             if progname is None:
                 progname = ""
@@ -142,20 +145,26 @@ def make_eagle_device_schematics (gcom_dir, catalog, sch_template, libraries):
 def make_pin_nets (schematic):
     print "Adding pin nets..."
     
+    # find parts
     parts = schematic.find("./drawing/schematic/parts")
     
     if parts is None:
         return
     
+    # to list
     parts = parts.findall("part")
     
+    # map to names to find easier
     part_map = {}
     for part in parts:
         part_map[part.get("name")] = part
     
+    # get all sheets
     sheets = schematic.find("./drawing/schematic/sheets")
+    # to list
     sheets = sheets.findall("sheet")
     
+    # for each sheet in the schematic
     for sheet in sheets:
         print "In sheet..."
         instances = sheet.find("instances")
@@ -166,13 +175,14 @@ def make_pin_nets (schematic):
             gate = instance.get("gate")
             ref = instance.get("part")
         
-            library = part_map[ref].get("library")
-            print "Library:", library
-            deviceset = part_map[ref].get("deviceset")
+            library_name = part_map[ref].get("library")
+            print "Library:", library_name
+            deviceset_name = part_map[ref].get("deviceset")
         
-            library = schematic.find("./drawing/schematic/libraries/library/[@name='"+library+"']")
+            library = schematic.find("./drawing/schematic/libraries/library/[@name='"+library_name+"']")
             
-            deviceset = library.find("devicesets/deviceset/[@name='"+deviceset+"']")
+            deviceset = library.find("devicesets/deviceset/[@name='"+deviceset_name+"']")
+            assert deviceset is not None, "Deviceset "+deviceset_name+" not found in library "+library_name+"."
             gate = deviceset.find("gates/gate[@name='"+gate+"']")
         
             symbol = gate.get("symbol")
