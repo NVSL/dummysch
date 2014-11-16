@@ -127,6 +127,9 @@ def make_eagle_device_schematics (gcom_dir, catalog, sch_template, libraries):
                 print "Dummy part found:", ref, device_name, library_name, variant, value
             else:
                 parts.append( ET.Element("part", name=ref, library=library_name, deviceset=device_name, device=variant, value=value) )
+                
+                
+                
                 instances.append( ET.Element("instance", part=ref, gate="G$1", x="0",y="0") )
             
             # add libraries
@@ -172,7 +175,7 @@ def make_pin_nets (schematic):
         
         for instance in instances:
             print "In instance..."
-            gate = instance.get("gate")
+            gate_name = instance.get("gate")
             ref = instance.get("part")
         
             library_name = part_map[ref].get("library")
@@ -183,7 +186,24 @@ def make_pin_nets (schematic):
             
             deviceset = library.find("devicesets/deviceset/[@name='"+deviceset_name+"']")
             assert deviceset is not None, "Deviceset "+deviceset_name+" not found in library "+library_name+"."
-            gate = deviceset.find("gates/gate[@name='"+gate+"']")
+            
+            gates = deviceset.findall("./gates/gate")
+            
+            if len(gates) > 1:
+                print "Part:", deviceset_name, "has more than one gate. Can only make auto schematics for devices with one gate. Make a schematic manually."
+                exit(-1)
+            elif len(gates) == 0:
+                return
+            
+            available_gate_name = gates[0].get("name")
+            
+            # earlier we assumed that the gate_name is G$1, but this might not be the case. Here we fix that.
+            if gate_name != available_gate_name:
+                gate_name = available_gate_name
+                instance.set("gate", gate_name)
+            
+            print "Gate name:", gate_name
+            gate = deviceset.find("gates/gate[@name='"+gate_name+"']")
         
             symbol = gate.get("symbol")
             symbol = library.find("symbols/symbol[@name='"+symbol+"']")
