@@ -58,7 +58,7 @@ def make_eagle_device_schematics (gcom_dir, catalog, sch_template, libraries):
         if schematic_path is None:
             # no schematic filename specified
             # so let's add one
-            print "No schematic specified for", component.get("keyname")
+            #print "No schematic specified for", component.get("keyname")
             schematic_path = ET.Element("schematic")
             schematic_path.set("filename", "eagle/"+keyname+".device.auto.sch")
             component.append(schematic_path)
@@ -96,7 +96,7 @@ def make_eagle_device_schematics (gcom_dir, catalog, sch_template, libraries):
             
             if eagledevice is None:
                 print "Could not make auto schematic for:", component.get("keyname") + ". No eagledevice specified."
-                print
+                #print
                 continue
             
             device_name = eagledevice.get("device-name")
@@ -141,12 +141,12 @@ def make_eagle_device_schematics (gcom_dir, catalog, sch_template, libraries):
             make_pin_nets(sch_template)
 
             sch_template.write(schematic_path)
-            print
+            #print
             
     return catalog
             
 def make_pin_nets (schematic):
-    print "Adding pin nets..."
+    #print "Adding pin nets..."
     
     # find parts
     parts = schematic.find("./drawing/schematic/parts")
@@ -169,17 +169,17 @@ def make_pin_nets (schematic):
     
     # for each sheet in the schematic
     for sheet in sheets:
-        print "In sheet..."
+        #print "In sheet..."
         instances = sheet.find("instances")
         instances = instances.findall("instance")
         
         for instance in instances:
-            print "In instance..."
+            #print "In instance..."
             gate_name = instance.get("gate")
             ref = instance.get("part")
         
             library_name = part_map[ref].get("library")
-            print "Library:", library_name
+            #print "Library:", library_name
             deviceset_name = part_map[ref].get("deviceset")
         
             library = schematic.find("./drawing/schematic/libraries/library/[@name='"+library_name+"']")
@@ -202,7 +202,7 @@ def make_pin_nets (schematic):
                 gate_name = available_gate_name
                 instance.set("gate", gate_name)
             
-            print "Gate name:", gate_name
+            #print "Gate name:", gate_name
             gate = deviceset.find("gates/gate[@name='"+gate_name+"']")
         
             symbol = gate.get("symbol")
@@ -213,7 +213,7 @@ def make_pin_nets (schematic):
             nets = sheet.find("nets")
         
             for pin in pins:
-                print "pin:", ref
+                #print "pin:", ref
                 name = pin.get("name")
                 net = ET.Element("net", {"name":name, "class":"0"})
                 segment = ET.Element("segment")
