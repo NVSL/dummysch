@@ -127,9 +127,6 @@ def make_eagle_device_schematics (gcom_dir, catalog, sch_template, libraries):
                 print "Dummy part found:", ref, device_name, library_name, variant, value
             else:
                 parts.append( ET.Element("part", name=ref, library=library_name, deviceset=device_name, device=variant, value=value) )
-                
-                
-                
                 instances.append( ET.Element("instance", part=ref, gate="G$1", x="0",y="0") )
             
             # add libraries
