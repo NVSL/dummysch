@@ -62,7 +62,9 @@ def make_eagle_device_schematics (gcom_dir, catalog, sch_template, libraries):
             schematic_path = ET.Element("schematic")
             schematic_path.set("filename", "eagle/"+keyname+".device.auto.sch")
             component.append(schematic_path)
-            
+
+        if schematic_path.get("filename") is None:
+            raise Exception("Missing 'filename' attribute on <schematic>");
         schematic_path = os.path.join(home_dir, schematic_path.get("filename"))
         #print "Using:", schematic_path
         
