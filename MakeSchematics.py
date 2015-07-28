@@ -88,7 +88,7 @@ def make_eagle_device_schematics (gcom_dir, catalog, sch_template, libraries):
             #print schematic_path, "exists"
             pass
         else:
-            print "Making auto schematic:", schematic_path
+            #print "Making auto schematic:", schematic_path
             
             if not os.path.exists(os.path.dirname(schematic_path)):
                 os.makedirs(os.path.dirname(schematic_path))
