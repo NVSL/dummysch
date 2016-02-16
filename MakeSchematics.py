@@ -46,6 +46,9 @@ def make_eagle_device_schematics (gcom_dir, catalog, sch_template, libraries):
     base_template = copy.deepcopy(sch_template)
     
     for component in components:
+        if component.find("schematic") is None and component.find("eagledevice") is None:
+            continue;
+            
         sch_template = copy.deepcopy(base_template)
         #print "Checking component:", component.get("keyname")
         home_dir = component.find("homedirectory").text
