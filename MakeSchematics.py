@@ -41,7 +41,7 @@ def make_empty_schematics (gcom_dir, catalog, sch_template):
     return catalog
         
 def make_eagle_device_schematics (gcom_dir, catalog, sch_template, libraries):
-    components = catalog.findall("component")
+    components = map(lambda x: x.et, catalog.get_list_of_components())
     
     base_template = copy.deepcopy(sch_template)
     

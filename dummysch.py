@@ -2,7 +2,7 @@
 
 import argparse
 from lxml import etree as ET
-
+import ComponentCatalog
 import MakeSchematics
 #import CatalogTester
 
@@ -19,8 +19,9 @@ args.c = args.c[0]
 args.d = args.d[0]
 args.t = args.t[0]
 
-new_cat = MakeSchematics.make_eagle_device_schematics(gcom_dir=args.d, catalog=ET.parse(args.c), sch_template=ET.parse(args.t), libraries=args.l)
+cat = ComponentCatalog.ComponentCatalog(args.c)
+MakeSchematics.make_eagle_device_schematics(gcom_dir=args.d, catalog=cat, sch_template=ET.parse(args.t), libraries=args.l)
 
 #CatalogTester.check(new_cat, args.d, args.l)
 
-new_cat.write(args.c)
+cat.write(args.c)
