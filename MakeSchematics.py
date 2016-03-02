@@ -3,6 +3,8 @@ from lxml import etree as ET
 import os
 import ntpath as splitpath
 import copy
+import Swoop
+import Swoop.tools
 
 def make_empty_schematics (gcom_dir, catalog, sch_template):
     components = catalog.findall("component")
@@ -142,7 +144,10 @@ def make_eagle_device_schematics (gcom_dir, catalog, sch_template, libraries):
 
             make_pin_nets(sch_template)
 
-            sch_template.write(schematic_path)
+            heSchematic = Swoop.SchematicFile.from_etree(sch_template)
+            Swoop.tools.removeDeadEFPs(heSchematic)
+            heSchematic.write(schematic_path)
+            #sch_template.write(schematic_path)
             #print
             
     return catalog
