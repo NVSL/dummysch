@@ -127,21 +127,6 @@ def make_eagle_device_schematics (gcom_dir, catalog, sch_template, libraries):
                 value = progname.upper()
             else:
                 value = ""
-
-            if (library_name == "None") or (library_name == "NONE") or (device_name == "None") or (device_name == "NONE"):
-                print "Dummy part found:", ref, device_name, library_name, variant, value
-            else:
-                sch.add_part(Swoop.Part().
-                             set_name(ref).
-                             set_library(library_name).
-                             set_deviceset(device_name).
-                             set_device(variant).
-                             set_value(value))
-                sch.get_nth_sheet(0).add_instance(Swoop.Instance().
-                                                  set_part(ref).
-                                                  set_gate("G$1").
-                                                  set_location(0,0))
-
             # this is why this script is slow.  We copy the whole library, and
             # the clear out almost all of it a few lines later. If you want to
             # fix it, add a function to just what's need for an instance from
@@ -149,6 +134,25 @@ def make_eagle_device_schematics (gcom_dir, catalog, sch_template, libraries):
             library = Swoop.library_cache.load_library_by_name(library_name).get_library().clone().set_name(library_name)
             log.info("adding {}".format(library_name))
             sch.add_library(library)
+
+            if (library_name == "None") or (library_name == "NONE") or (device_name == "None") or (device_name == "NONE"):
+                print "Dummy part found:", ref, device_name, library_name, variant, value
+            else:
+                p = (Swoop.Part().
+                     set_name(ref).
+                     set_library(library_name).
+                     set_deviceset(device_name).
+                     set_device(variant))
+
+                if library.get_deviceset(device_name).get_uservalue():
+                    p.set_value(value)
+                
+                sch.add_part(p)
+                sch.get_nth_sheet(0).add_instance(Swoop.Instance().
+                                                  set_part(ref).
+                                                  set_gate("G$1").
+                                                  set_location(0,0))
+
 
             make_pin_nets(sch)
 
