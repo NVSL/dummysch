@@ -11,9 +11,8 @@ with open(os.path.join(here, 'DESCRIPTION.rst'), encoding='utf-8') as f:
 with open(os.path.join(here, 'VERSION.txt'), encoding='utf-8') as f:
     version = f.read()
 
-setup("dummysch",
+setup(name="dummysch",
       version=version,
       long_description=long_description,
       author="NVSL, University of California San Diego",
-      packages = find_packages()
-)
+      packages = find_packages())
