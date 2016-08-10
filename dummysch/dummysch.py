@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 
 import argparse
-from lxml import etree as ET
-import ComponentCatalog
-import MakeSchematicsSwoop
 import logging as log
+
+import Gadgetron.ComponentCatalog
+from lxml import etree as ET
+
+import MakeSchematicsSwoop
+
 #import CatalogTester
 
 parser = argparse.ArgumentParser(description="Looks in a gcom directory to make dummy schematics for components.")
@@ -27,7 +30,7 @@ if args.verbose:
 else:
     log.basicConfig(format="%(levelname)s: %(message)s")
 
-cat = ComponentCatalog.ComponentCatalog(args.c)
+cat = Gadgetron.ComponentCatalog.ComponentCatalog(args.c)
 MakeSchematicsSwoop.make_eagle_device_schematics(gcom_dir=args.d, catalog=cat, sch_template=ET.parse(args.t), libraries=args.l)
 
 #CatalogTester.check(new_cat, args.d, args.l)
