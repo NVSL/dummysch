@@ -6,3 +6,5 @@ include ../Gadgetron/dev.make
 test:
 	true
 
+clean:
+	true
